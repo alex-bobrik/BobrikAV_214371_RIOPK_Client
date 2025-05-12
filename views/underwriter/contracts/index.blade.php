@@ -1,14 +1,11 @@
-@extends('client.layouts.app')
+@extends('underwriter.layouts.app')
 
 @section('title', 'Договора')
-@section('page-title', 'Зарегистрированные договора')
+@section('page-title', 'Договора вашей компании')
 
 @section('content')
 <div class="mb-4 d-flex justify-content-between align-items-center">
     <h4 class="mb-0">Список договоров</h4>
-    <a href="{{ route('client.contracts.create') }}" class="btn btn-sm btn-primary">
-        <i class="bi bi-plus-circle"></i> Новый договор
-    </a>
 </div>
 
 @if(session('success'))
@@ -26,7 +23,7 @@
                     <tr>
                         <th>ID</th>
                         <th>Тип</th>
-                        <th>Перестраховщик</th>
+                        <th>Страхователь</th>
                         <th>Сумма покрытия</th>
                         <th>Дата начала</th>
                         <th>Статус</th>
@@ -45,7 +42,7 @@
                                     @default {{ $contract->type }}
                                 @endswitch
                             </td>
-                            <td>{{ $contract->reinsurer->name ?? '—' }}</td>
+                            <td>{{ $contract->insurer->name ?? '—' }}</td>
                             <td>₽{{ number_format($contract->coverage, 0, '', ' ') }}</td>
                             <td>{{ \Carbon\Carbon::parse($contract->start_date)->format('d.m.Y') }}</td>
                             <td>
@@ -56,22 +53,9 @@
                                 @endswitch
                             </td>
                             <td class="text-end">
-                                <a href="{{ route('client.contracts.show', $contract) }}" class="btn btn-sm btn-outline-secondary">
+                                <a href="{{ route('underwriter.contracts.show', $contract) }}" class="btn btn-sm btn-outline-secondary">
                                     <i class="bi bi-eye"></i>
                                 </a>
-                                @if($contract->status === 'pending')
-                                    <a href="{{ route('client.contracts.edit', $contract) }}" class="btn btn-sm btn-outline-primary">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <form action="{{ route('client.contracts.destroy', $contract) }}" method="POST" class="d-inline"
-                                        onsubmit="return confirm('Удалить этот договор?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
-                                @endif
                             </td>
                         </tr>
                     @empty

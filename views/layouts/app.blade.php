@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-        <meta name="csrf-token" content="{{ csrf_token() }}">
-        <!-- остальные мета-теги -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title') | Система перестрахования</title>
@@ -24,7 +23,7 @@
 <body>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="{{ route('home') }}">Перестрахование</a>
+            <a class="navbar-brand" >Перестрахование</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                 <span class="navbar-toggler-icon"></span>
             </button>

@@ -4,23 +4,18 @@
 @section('page-title', 'Новый договор перестрахования')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 @push('scripts')
-<!-- Подключаем jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- Подключаем Select2 после jQuery -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<!-- Подключаем Select2 русскую локализацию (опционально) -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/i18n/ru.js"></script>
 
 <script>
 $(document).ready(function() {
-    // Инициализация Select2 с русским языком
     $('.select2').select2({
         placeholder: 'Выберите компанию',
         width: '100%',
         language: 'ru'
     });
 
-    // Валидация даты окончания
     $('#start_date').change(function() {
         const startDate = new Date($(this).val());
         if ($('#end_date').val()) {
@@ -34,20 +29,16 @@ $(document).ready(function() {
         $('#end_date').attr('min', $(this).val());
     });
 
-    // Обработка отправки формы
     $('#createContractForm').submit(function(e) {
         e.preventDefault();
         
-        // Сброс ошибок
         $('.is-invalid').removeClass('is-invalid');
         $('.invalid-feedback').text('');
         
-        // Показать спиннер
         $('#submitText').addClass('d-none');
         $('#spinner').removeClass('d-none');
         $('#submitBtn').prop('disabled', true);
         
-        // Подготовка данных
         const formData = {
             type: $('#type').val(),
             reinsurer_id: $('#reinsurer_id').val(),
@@ -59,7 +50,6 @@ $(document).ready(function() {
             _token: '{{ csrf_token() }}'
         };
         
-        // Отправка запроса
         $.ajax({
             url: '{{ route("client.contracts.store") }}',
             type: 'POST',
@@ -70,13 +60,11 @@ $(document).ready(function() {
             },
             data: JSON.stringify(formData),
             success: function(response) {
-                // Показать модальное окно успеха
                 $('#contractNumber').text('#' + response.data.id);
                 $('#viewContractBtn').attr('href', '/client/contracts/' + response.data.id);
                 $('#successModal').modal('show');
             },
             error: function(xhr) {
-                // Обработка ошибок валидации
                 if (xhr.status === 422) {
                     const errors = xhr.responseJSON.errors;
                     for (const field in errors) {
@@ -88,7 +76,6 @@ $(document).ready(function() {
                 }
             },
             complete: function() {
-                // Скрыть спиннер
                 $('#submitText').removeClass('d-none');
                 $('#spinner').addClass('d-none');
                 $('#submitBtn').prop('disabled', false);
@@ -122,7 +109,6 @@ $(document).ready(function() {
             @csrf
             
             <div class="row g-3">
-                <!-- Тип договора -->
                 <div class="col-md-6">
                     <label for="type" class="form-label">Тип договора *</label>
                     <select class="form-select" id="type" name="type" required>
@@ -134,7 +120,6 @@ $(document).ready(function() {
                     <div class="invalid-feedback" id="typeError"></div>
                 </div>
                 
-                <!-- Перестраховщик -->
                 <div class="col-md-6">
                     <label for="reinsurer_id" class="form-label">Перестраховщик *</label>
                     <select class="form-select select2" id="reinsurer_id" name="reinsurer_id" required>
@@ -146,7 +131,6 @@ $(document).ready(function() {
                     <div class="invalid-feedback" id="reinsurerError"></div>
                 </div>
                 
-                <!-- Финансовые условия -->
                 <div class="col-md-6">
                     <label for="premium" class="form-label">Страховая премия (₽) *</label>
                     <input type="number" class="form-control" id="premium" name="premium" required>
@@ -159,7 +143,6 @@ $(document).ready(function() {
                     <div class="invalid-feedback" id="coverageError"></div>
                 </div>
                 
-                <!-- Даты действия -->
                 <div class="col-md-6">
                     <label for="start_date" class="form-label">Дата начала *</label>
                     <input type="date" class="form-control" id="start_date" name="start_date" required>
@@ -172,11 +155,6 @@ $(document).ready(function() {
                     <div class="invalid-feedback" id="endDateError"></div>
                 </div>
                 
-                <!-- Дополнительная информация -->
-                <div class="col-12">
-                    <label for="notes" class="form-label">Примечания</label>
-                    <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
-                </div>
             </div>
             
             <div class="mt-4">
@@ -215,13 +193,11 @@ $(document).ready(function() {
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
 $(document).ready(function() {
-    // Инициализация Select2
     $('.select2').select2({
         placeholder: 'Выберите компанию',
         width: '100%'
     });
 
-    // Валидация даты окончания
     $('#start_date').change(function() {
         const startDate = new Date($(this).val());
         if ($('#end_date').val()) {
@@ -235,26 +211,21 @@ $(document).ready(function() {
         $('#end_date').attr('min', $(this).val());
     });
 
-    // Обработка отправки формы
     $('#createContractForm').submit(function(e) {
     e.preventDefault();
     
-    // Сброс ошибок
     $('.is-invalid').removeClass('is-invalid');
     $('.invalid-feedback').text('');
     
-    // Показать спиннер
     $('#submitText').addClass('d-none');
     $('#spinner').removeClass('d-none');
     $('#submitBtn').prop('disabled', true);
     
-    // Получаем CSRF-токен из мета-тега
     const csrfToken = $('meta[name="csrf-token"]').attr('content');
     
-    // Получаем API-токен из localStorage или куков
     const apiToken = localStorage.getItem('access_token') || getCookie('XSRF-TOKEN');
+    const currentUser = @json(Auth::user());
     
-    // Подготовка данных
     const formData = {
         type: $('#type').val(),
         reinsurer_id: $('#reinsurer_id').val(),
@@ -262,10 +233,10 @@ $(document).ready(function() {
         coverage: $('#coverage').val(),
         start_date: $('#start_date').val(),
         end_date: $('#end_date').val(),
-        notes: $('#notes').val()
+        notes: $('#notes').val(),
+        user: currentUser,
     };
     
-    // Отправка запроса
     $.ajax({
         url: '/api/v1/contracts',
         type: 'POST',
@@ -277,7 +248,6 @@ $(document).ready(function() {
         },
         data: JSON.stringify(formData),
         success: function(response) {
-            // Показать модальное окно успеха
             $('#contractNumber').text('#' + response.data.id);
             $('#viewContractBtn').attr('href', '/client/contracts/' + response.data.id);
             $('#successModal').modal('show');
@@ -303,7 +273,6 @@ $(document).ready(function() {
     });
 });
 
-// Функция для получения куки
 function getCookie(name) {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);

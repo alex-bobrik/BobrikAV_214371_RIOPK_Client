@@ -8,6 +8,9 @@
         <a href="{{ route('client.dashboard') }}" class="nav-item d-block px-4 py-2 text-decoration-none {{ request()->is('client/dashboard') ? 'active' : '' }}">
             <i class="bi bi-house-door me-2"></i> Главная
         </a>
+        <a href="{{ route('client.companies.index') }}" class="nav-item d-block px-4 py-2 text-decoration-none {{ request()->is('client/companies*') ? 'active' : '' }}">
+            <i class="bi bi-building me-2"></i> Компании
+        </a>
         <a href="{{ route('client.contracts.index') }}" class="nav-item d-block px-4 py-2 text-decoration-none {{ request()->is('client/contracts*') ? 'active' : '' }}">
             <i class="bi bi-file-earmark-text me-2"></i> Договоры
         </a>
